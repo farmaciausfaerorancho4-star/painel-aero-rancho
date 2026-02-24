@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel TV Aero Rancho</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0056b3">
+    <link rel="apple-touch-icon" href="icon.png">
+
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 2em;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .painel-chamada {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 80%;
+            max-width: 800px;
+        }
+
+        .senha-atual {
+            font-size: 8em;
+            color: var(--primary-color);
+            margin: 20px 0;
+            font-weight: 900;
+        }
+
+        .local-atendimento {
+            font-size: 2.5em;
+            color: #555;
+        }
+
+        footer {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #eee;
+        }
+
+        .btn-reset {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-reset:hover {
+            background-color: #c82333;
+        }
+    </style>
+
+    <script>
+        // Registro do Service Worker para o APP
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('PWA: Ativo'))
+                    .catch(err => console.log('PWA: Erro', err));
+            });
+        }
+
+        // Função de Reset com a senha salva: aeroranchoiv
+        function resetarPainel() {
+            const senhaAdmin = prompt("Digite a senha para resetar o painel:");
+            if (senhaAdmin === "aeroranchoiv") {
+                alert("Painel resetado com sucesso!");
+                location.reload();
+            } else {
+                alert("Senha incorreta!");
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <header>
+        PAINEL DE ATENDIMENTO - AERO RANCHO
+    </header>
+
+    <main>
+        <div class="painel-chamada">
+            <div class="local-atendimento">SENHA ATUAL</div>
+            <div class="senha-atual" id="senha">A001</div>
+            <div class="local-atendimento">CONSULTÓRIO 04</div>
+        </div>
+    </main>
+
+    <footer>
+        <div id="data-hora"></div>
+        <button class="btn-reset" onclick="resetarPainel()">Resetar Sistema</button>
+    </footer>
+
+    <script>
+        // Atualiza Data e Hora
+        function atualizarRelogio() {
+            const agora = new Date();
+            document.getElementById('data-hora').innerText = agora.toLocaleString('pt-BR');
+        }
+        setInterval(atualizarRelogio, 1000);
+        atualizarRelogio();
+    </script>
+</body>
+</html>
