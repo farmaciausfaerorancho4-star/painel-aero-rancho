@@ -2,40 +2,38 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel TV Aero Rancho</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Painel Aero Rancho IV</title>
     
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0056b3">
-    <link rel="apple-touch-icon" href="icon.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
 
     <style>
         :root {
-            --primary-color: #0056b3;
-            --bg-color: #f4f7f6;
-            --card-bg: #ffffff;
-            --text-color: #333;
+            --primary: #0056b3;
+            --accent: #e67e22;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: 'Arial', sans-serif;
+            background-color: #000; /* Fundo preto para não cansar a TV */
+            color: white;
             margin: 0;
+            padding: 0;
             display: flex;
             flex-direction: column;
             height: 100vh;
-            overflow: hidden;
+            overflow: hidden; /* Remove barras de rolagem */
+            cursor: none; /* ESCONDE O MOUSE NA TV */
         }
 
         header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 20px;
+            background-color: var(--primary);
+            padding: 2vh;
             text-align: center;
-            font-size: 2em;
+            font-size: 5vh;
             font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
         main {
@@ -43,103 +41,83 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
         }
 
-        .painel-chamada {
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 40px;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            width: 80%;
-            max-width: 800px;
+        .cartao-senha {
+            background: white;
+            color: #333;
+            width: 85vw;
+            height: 60vh;
+            border-radius: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-left: 20px solid var(--accent);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.8);
         }
 
-        .senha-atual {
-            font-size: 8em;
-            color: var(--primary-color);
-            margin: 20px 0;
-            font-weight: 900;
-        }
-
-        .local-atendimento {
-            font-size: 2.5em;
-            color: #555;
-        }
+        .label { font-size: 6vh; color: #777; font-weight: bold; }
+        .senha { font-size: 25vh; color: var(--primary); font-weight: 900; line-height: 1; margin: 2vh 0; }
+        .local { font-size: 8vh; color: var(--accent); font-weight: bold; }
 
         footer {
-            padding: 20px;
+            background: #111;
+            padding: 2vh 4vw;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #eee;
+            font-size: 3vh;
         }
 
-        .btn-reset {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+        /* Botão de reset escondido (só aparece se passar o mouse ou clicar) */
+        .btn-admin {
+            opacity: 0.1;
+            background: none;
+            color: #444;
+            border: 1px solid #333;
+            padding: 5px 10px;
             cursor: pointer;
-            font-weight: bold;
         }
-
-        .btn-reset:hover {
-            background-color: #c82333;
-        }
+        .btn-admin:hover { opacity: 1; color: red; }
     </style>
-
-    <script>
-        // Registro do Service Worker para o APP
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('PWA: Ativo'))
-                    .catch(err => console.log('PWA: Erro', err));
-            });
-        }
-
-        // Função de Reset com a senha salva: aeroranchoiv
-        function resetarPainel() {
-            const senhaAdmin = prompt("Digite a senha para resetar o painel:");
-            if (senhaAdmin === "aeroranchoiv") {
-                alert("Painel resetado com sucesso!");
-                location.reload();
-            } else {
-                alert("Senha incorreta!");
-            }
-        }
-    </script>
 </head>
 <body>
 
-    <header>
-        PAINEL DE ATENDIMENTO - AERO RANCHO
-    </header>
+    <header>FARMÁCIA USF AERO RANCHO IV</header>
 
     <main>
-        <div class="painel-chamada">
-            <div class="local-atendimento">SENHA ATUAL</div>
-            <div class="senha-atual" id="senha">A001</div>
-            <div class="local-atendimento">CONSULTÓRIO 04</div>
+        <div class="cartao-senha">
+            <div class="label">SENHA</div>
+            <div class="senha" id="txt-senha">A001</div>
+            <div class="local" id="txt-local">GUICHÊ 01</div>
         </div>
     </main>
 
     <footer>
-        <div id="data-hora"></div>
-        <button class="btn-reset" onclick="resetarPainel()">Resetar Sistema</button>
+        <div id="relogio">00:00:00</div>
+        <button class="btn-admin" onclick="resetar()">Reset</button>
     </footer>
 
     <script>
-        // Atualiza Data e Hora
-        function atualizarRelogio() {
-            const agora = new Date();
-            document.getElementById('data-hora').innerText = agora.toLocaleString('pt-BR');
+        // Lógica de Relógio
+        function clock() {
+            const now = new Date();
+            document.getElementById('relogio').innerText = now.toLocaleTimeString('pt-BR');
         }
-        setInterval(atualizarRelogio, 1000);
-        atualizarRelogio();
+        setInterval(clock, 1000);
+
+        // Lógica de Reset Protegido (Senha: aeroranchoiv)
+        function resetar() {
+            const p = prompt("Senha de Admin:");
+            if(p === "aeroranchoiv") {
+                alert("Sistema Reiniciado");
+                // Aqui você pode adicionar a lógica para limpar o Firebase
+            }
+        }
+
+        // Dica: Como você já tem Firebase, a lógica de atualização 
+        // deve ser inserida aqui para escutar o banco de dados.
     </script>
 </body>
 </html>
